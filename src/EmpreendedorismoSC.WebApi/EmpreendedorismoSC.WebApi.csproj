@@ -5,6 +5,10 @@
     <ProjectReference Include="..\EmpreendedorismoSC.Infrastructure\EmpreendedorismoSC.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
