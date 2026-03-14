@@ -1,23 +1,50 @@
+using EmpreendedorismoSC.Application.Common;
 using EmpreendedorismoSC.Application.DTOs;
 using EmpreendedorismoSC.Application.Interfaces;
 using EmpreendedorismoSC.Domain.Entities;
 using EmpreendedorismoSC.Domain.Interfaces;
+using FluentValidation;
 
 namespace EmpreendedorismoSC.Application.Services;
 
 public class EmpreendimentoService : IEmpreendimentoService
 {
     private readonly IEmpreendimentoRepository _repository;
+    private readonly IValidator<CreateEmpreendimentoDto> _createValidator;
+    private readonly IValidator<UpdateEmpreendimentoDto> _updateValidator;
 
-    public EmpreendimentoService(IEmpreendimentoRepository repository)
+    public EmpreendimentoService(
+        IEmpreendimentoRepository repository,
+        IValidator<CreateEmpreendimentoDto> createValidator,
+        IValidator<UpdateEmpreendimentoDto> updateValidator)
     {
         _repository = repository;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
     }
 
-    public async Task<IEnumerable<EmpreendimentoDto>> GetAllAsync()
+    public async Task<PagedResult<EmpreendimentoDto>> GetAllAsync(EmpreendimentoFilterDto filter)
     {
-        var empreendimentos = await _repository.GetAllAsync();
-        return empreendimentos.Select(MapToDto);
+        // Validar limites de paginação
+        if (filter.Pagina < 1) filter.Pagina = 1;
+        if (filter.TamanhoPagina < 1) filter.TamanhoPagina = 10;
+        if (filter.TamanhoPagina > 50) filter.TamanhoPagina = 50;
+
+        var (items, totalCount) = await _repository.GetAllAsync(
+            municipio: filter.Municipio,
+            segmentoAtuacao: filter.SegmentoAtuacao,
+            ativo: filter.Ativo,
+            busca: filter.Busca,
+            pagina: filter.Pagina,
+            tamanhoPagina: filter.TamanhoPagina);
+
+        return new PagedResult<EmpreendimentoDto>
+        {
+            Items = items.Select(MapToDto),
+            TotalItems = totalCount,
+            Pagina = filter.Pagina,
+            TamanhoPagina = filter.TamanhoPagina
+        };
     }
 
     public async Task<EmpreendimentoDto?> GetByIdAsync(Guid id)
@@ -28,6 +55,13 @@ public class EmpreendimentoService : IEmpreendimentoService
 
     public async Task<EmpreendimentoDto> CreateAsync(CreateEmpreendimentoDto dto)
     {
+        var validationResult = await _createValidator.ValidateAsync(dto);
+        if (!validationResult.IsValid)
+        {
+            var errors = string.Join(" ", validationResult.Errors.Select(e => e.ErrorMessage));
+            throw new ArgumentException(errors);
+        }
+
         var empreendimento = new Empreendimento
         {
             Id = Guid.NewGuid(),
@@ -46,6 +80,13 @@ public class EmpreendimentoService : IEmpreendimentoService
 
     public async Task<EmpreendimentoDto?> UpdateAsync(Guid id, UpdateEmpreendimentoDto dto)
     {
+        var validationResult = await _updateValidator.ValidateAsync(dto);
+        if (!validationResult.IsValid)
+        {
+            var errors = string.Join(" ", validationResult.Errors.Select(e => e.ErrorMessage));
+            throw new ArgumentException(errors);
+        }
+
         var existing = await _repository.GetByIdAsync(id);
         if (existing is null)
             return null;

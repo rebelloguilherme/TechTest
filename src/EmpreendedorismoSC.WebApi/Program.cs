@@ -1,9 +1,12 @@
 using System.Text.Json.Serialization;
 using EmpreendedorismoSC.Application.Interfaces;
 using EmpreendedorismoSC.Application.Services;
+using EmpreendedorismoSC.Application.Validators;
 using EmpreendedorismoSC.Domain.Interfaces;
 using EmpreendedorismoSC.Infrastructure.Data;
 using EmpreendedorismoSC.Infrastructure.Repositories;
+using EmpreendedorismoSC.WebApi.Middleware;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -16,6 +19,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // ===== Dependency Injection =====
 builder.Services.AddScoped<IEmpreendimentoRepository, EmpreendimentoRepository>();
 builder.Services.AddScoped<IEmpreendimentoService, EmpreendimentoService>();
+
+// ===== FluentValidation =====
+builder.Services.AddValidatorsFromAssemblyContaining<CreateEmpreendimentoValidator>();
 
 // ===== Controllers =====
 builder.Services.AddControllers()
@@ -48,6 +54,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// ===== Middleware =====
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 // ===== Pipeline =====
 if (app.Environment.IsDevelopment())
