@@ -73,3 +73,6 @@ app.UseCors();
 app.MapControllers();
 
 app.Run();
+
+// Necessário para WebApplicationFactory<Program> nos testes de integração
+public partial class Program { }
