@@ -59,6 +59,13 @@ try
             Version = "v1",
             Description = "API para gerenciamento de empreendimentos em Santa Catarina"
         });
+
+        // Inclui XML docs para exibir descrições no Swagger
+        var webApiXml = Path.Combine(AppContext.BaseDirectory, "EmpreendedorismoSC.WebApi.xml");
+        if (File.Exists(webApiXml)) options.IncludeXmlComments(webApiXml);
+
+        var applicationXml = Path.Combine(AppContext.BaseDirectory, "EmpreendedorismoSC.Application.xml");
+        if (File.Exists(applicationXml)) options.IncludeXmlComments(applicationXml);
     });
 
     // ===== CORS =====

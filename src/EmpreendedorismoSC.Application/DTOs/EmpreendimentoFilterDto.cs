@@ -20,7 +20,7 @@ public class EmpreendimentoFilterDto
     public bool? Ativo { get; set; }
 
     /// <summary>
-    /// Busca textual no nome do empreendimento ou empreendedor.
+    /// Busca textual livre (pesquisa nos campos: Nome do Empreendimento e Nome do Empreendedor). Case-insensitive, busca parcial.
     /// </summary>
     public string? Busca { get; set; }
 

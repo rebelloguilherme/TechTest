@@ -179,7 +179,7 @@ dotnet test tests/EmpreendedorismoSC.IntegrationTests
 | `municipio` | string | Filtro parcial por município |
 | `segmentoAtuacao` | enum | Tecnologia, Comercio, Industria, Servicos, Agronegocio |
 | `ativo` | bool | Filtrar por status |
-| `busca` | string | Busca textual em nome do empreendimento e empreendedor |
+| `busca` | string | Busca textual livre nos campos **Nome do Empreendimento** e **Nome do Empreendedor** (parcial, case-insensitive) |
 | `pagina` | int | Número da página (padrão: 1) |
 | `tamanhoPagina` | int | Itens por página (padrão: 10, máximo: 50) |
 
