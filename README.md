@@ -2,6 +2,8 @@
 
 API REST para gerenciamento de empreendimentos em Santa Catarina, desenvolvida em **.NET 8** seguindo os princípios de **Clean Architecture**.
 
+📺 **Vídeo Pitch:** Confira uma breve apresentação e demonstração das funcionalidades do projeto [neste link do YouTube](https://youtu.be/VSpE8kAGV18).
+
 ## 📋 Descrição
 
 Sistema CRUD para cadastro e consulta de empreendimentos catarinenses, contemplando:
